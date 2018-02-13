@@ -3,6 +3,7 @@ require 'chipmunk'
 require_relative 'boudler'
 require_relative 'platform'
 require_relative 'wall'
+require_relative 'chip'
 
 # class Escape
 class Escape < Gosu::Window
@@ -27,6 +28,7 @@ class Escape < Gosu::Window
     @floor = Wall.new(self, 400, 810, 800, 20)
     @left_wall = Wall.new(self, -10, 400, 20, 800)
     @right_wall = Wall.new(self, 810, 470, 20, 660)
+    @player = Chip.new(self, 70, 700)
   end
 
   def update
@@ -45,6 +47,7 @@ class Escape < Gosu::Window
     @background.draw(0, 529, 0)
     @boulders.each(&:draw)
     @platforms.each(&:draw)
+    @player.draw
   end
 
   def make_platforms
