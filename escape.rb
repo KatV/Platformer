@@ -39,6 +39,13 @@ class Escape < Gosu::Window
       if rand < BOUDLER_FREQUENCY
         @boulders.push Boulder.new(self, 200 + rand(400), -20)
       end
+      if button_down?(Gosu::KbRight)
+        @player.move_right
+      elsif button_down?(Gosu::KbLeft)
+        @player.move_left
+      else
+        @player.stand
+      end
     end
   end
 
