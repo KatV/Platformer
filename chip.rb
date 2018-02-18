@@ -1,9 +1,10 @@
+# Chip actions
 class Chip
 
   RUN_IMPULSE = 600
-  FLY_IMPULSE = 60
+  FLY_IMPULSE = 600
   JUMP_IMPULSE = 36000
-  AIR_JUMP_IMPULSE = 1200
+  AIR_JUMP_IMPULSE = 12000
   SPEED_LIMIT = 400
   FRICTION = 0.7
   ELASTICITY = 0.2
@@ -52,7 +53,7 @@ class Chip
   def touching?(footing)
     x_diff = (@body.p.x - footing.body.p.x).abs
     y_diff = (@body.p.y + 30 - footing.body.p.y).abs
-    x_diff < 12 + footing.width / 2 and y_diff < 5 + footing.height / 2
+    x_diff < 12 + footing.width/2 and y_diff < 5 + footing.height / 2
   end
 
   def check_footing(things)
@@ -62,5 +63,42 @@ class Chip
     end
     @off_ground = false if @body.p.y > 765
   end
-  
+
+  def move_right
+    if @off_ground
+      @action = :jump_right
+      @body.apply_impulse(CP::Vec2.new(FLY_IMPULSE, 0), CP::Vec2.new(0, 0))
+    else
+      @action = :run_right
+      @body.apply_impulse(CP::Vec2.new(RUN_IMPULSE, 0), CP::Vec2.new(0, 0))
+    end
+  end
+
+  def move_left
+    if @off_ground
+      @action = :jump_left
+      @body.apply_impulse(CP::Vec2.new(-FLY_IMPULSE, 0), CP::Vec2.new(0, 0))
+    else
+      @action = :run_left
+      @body.apply_impulse(CP::Vec2.new(-RUN_IMPULSE, 0), CP::Vec2.new(0, 0))
+    end
+  end
+
+  def jump
+    if @off_ground
+      @body.apply_impulse(CP::Vec2.new(0, -AIR_JUMP_IMPULSE),
+                          CP::Vec2.new(0, 0))
+    else
+      @body.apply_impulse(CP::Vec2.new(0, -JUMP_IMPULSE), CP::Vec2.new(0, 0))
+      @action = if @action == :left
+                  :jump_left
+                else
+                  :jump_right
+                end
+    end
+  end
+
+  def stand
+    @action = :stand unless off_ground
+  end
 end
